@@ -6,7 +6,7 @@ export interface FeatureFlag {
   enabled: boolean;
   createdAt: Date;
   updatedAt: Date;
-  targetUsers?: "all" | "premium" | "pro" | "free";
+  targetUsers?: "all" | "premium" | "pro" | "free" | "elite";
   targetRoles?: UserRole[];
   rolloutPercentage?: number;
 }
@@ -46,6 +46,8 @@ export type FeatureFlagKey =
 
   // Vocalist features
   | "vocal_warmups"
+  | "vocal_exercises_library" // You might want both
+  | "vocal_health_tips"
 
   // General musician features
   | "musician_portfolio"
@@ -86,7 +88,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Dashboard for music teachers",
     targetUsers: "all",
     targetRoles: ["teacher"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   lesson_scheduling: {
     id: "lesson_scheduling",
@@ -94,7 +96,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Schedule music lessons",
     targetUsers: "all",
     targetRoles: ["teacher"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   student_management: {
     id: "student_management",
@@ -102,7 +104,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Manage student profiles",
     targetUsers: "pro",
     targetRoles: ["teacher"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== DJ/MC FEATURES ====================
@@ -112,7 +114,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Rent DJ equipment",
     targetUsers: "all",
     targetRoles: ["dj"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   mc_event_hosting: {
     id: "mc_event_hosting",
@@ -120,7 +122,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Tools for MCs to host events",
     targetUsers: "all",
     targetRoles: ["mc"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   playlist_management: {
     id: "playlist_management",
@@ -128,7 +130,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Create and manage playlists",
     targetUsers: "all",
     targetRoles: ["dj", "mc"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== INSTRUMENTALIST FEATURES ====================
@@ -138,7 +140,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Access to sheet music",
     targetUsers: "pro",
     targetRoles: ["instrumentalist"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   practice_tools: {
     id: "practice_tools",
@@ -146,17 +148,35 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Practice session management",
     targetUsers: "all",
     targetRoles: ["instrumentalist", "vocalist"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== VOCALIST FEATURES ====================
   vocal_warmups: {
     id: "vocal_warmups",
     name: "Vocal Warmups",
-    description: "Vocal exercises and warmups",
+    description: "Interactive vocal warmup exercises and routines",
+    targetUsers: "premium",
+    targetRoles: ["vocalist"],
+    rolloutPercentage: 0, // Start disabled
+  },
+
+  vocal_exercises_library: {
+    id: "vocal_exercises_library",
+    name: "Vocal Exercises Library",
+    description: "Library of vocal exercises and techniques",
+    targetUsers: "pro",
+    targetRoles: ["vocalist"],
+    rolloutPercentage: 0,
+  },
+
+  vocal_health_tips: {
+    id: "vocal_health_tips",
+    name: "Vocal Health Tips",
+    description: "Tips for maintaining vocal health",
     targetUsers: "all",
     targetRoles: ["vocalist"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0, // You can enable this immediately
   },
 
   // ==================== GENERAL MUSICIAN FEATURES ====================
@@ -166,7 +186,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Showcase your work",
     targetUsers: "all",
     targetRoles: ["teacher", "instrumentalist", "vocalist", "dj", "mc"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   gig_history: {
     id: "gig_history",
@@ -174,7 +194,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Track performance history",
     targetUsers: "all",
     targetRoles: ["instrumentalist", "vocalist", "dj", "mc"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== INDIVIDUAL CLIENT FEATURES ====================
@@ -184,7 +204,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Event planning for individuals",
     targetUsers: "all",
     targetRoles: ["individual_client"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   quick_booking: {
     id: "quick_booking",
@@ -192,7 +212,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Streamlined booking process",
     targetUsers: "all",
     targetRoles: ["individual_client"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== EVENT PLANNER FEATURES ====================
@@ -202,7 +222,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Professional event planning",
     targetUsers: "all",
     targetRoles: ["event_planner_client"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   vendor_management: {
     id: "vendor_management",
@@ -210,7 +230,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Manage vendor relationships",
     targetUsers: "pro",
     targetRoles: ["event_planner_client"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== VENUE FEATURES ====================
@@ -220,7 +240,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Venue management tools",
     targetUsers: "all",
     targetRoles: ["venue_client"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   booking_calendar: {
     id: "booking_calendar",
@@ -228,7 +248,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Manage venue bookings",
     targetUsers: "pro",
     targetRoles: ["venue_client"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== CORPORATE FEATURES ====================
@@ -238,7 +258,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Tools for corporate clients",
     targetUsers: "pro",
     targetRoles: ["corporate_client"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== BOOKER FEATURES ====================
@@ -248,7 +268,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Manage artist roster",
     targetUsers: "all",
     targetRoles: ["talent_agent", "booking_manager"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   contract_templates: {
     id: "contract_templates",
@@ -256,7 +276,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Pre-built contract templates",
     targetUsers: "pro",
     targetRoles: ["talent_agent", "booking_manager"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 
   // ==================== CROSS-ROLE FEATURES ====================
@@ -266,7 +286,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Enhanced communication",
     targetUsers: "pro",
     targetRoles: ["all"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   file_sharing: {
     id: "file_sharing",
@@ -274,7 +294,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Share files securely",
     targetUsers: "all",
     targetRoles: ["all"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
   calendar_sync: {
     id: "calendar_sync",
@@ -282,6 +302,6 @@ export const FEATURE_FLAGS_CONFIG: Record<
     description: "Sync with external calendars",
     targetUsers: "pro",
     targetRoles: ["all"],
-    rolloutPercentage: 100,
+    rolloutPercentage: 0,
   },
 };

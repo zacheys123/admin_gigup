@@ -64,7 +64,8 @@ export const setFeatureFlag = mutation({
         v.literal("all"),
         v.literal("free"),
         v.literal("pro"),
-        v.literal("premium")
+        v.literal("premium"),
+        v.literal("elite")
       )
     ),
     targetRoles: v.optional(v.array(v.string())),
