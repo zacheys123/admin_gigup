@@ -236,20 +236,27 @@ export function AddNewFeature() {
           </div>
 
           {selectedTemplate && (
-            <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <div
+              className={
+                "mt-4 p-4  border border-green-200 dark:border-green-800 rounded-lg" +
+                colors.successBg
+              }
+            >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-800 dark:text-green-200 text-sm">
-                    <strong>Template applied:</strong>{" "}
+                  <p className={" text-sm" + colors.warning}>
+                    <strong className={colors.textMuted}>
+                      Template applied:
+                    </strong>{" "}
                     {FEATURE_FLAGS_CONFIG[selectedTemplate].name}
                   </p>
-                  <p className="text-green-600 dark:text-green-300 text-xs">
+                  <p className="text-red-600 dark:text-red-300 text-xs">
                     You can customize the settings below
                   </p>
                 </div>
                 <button
                   onClick={clearTemplate}
-                  className="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100 text-sm"
+                  className="text-red-700 dark:text-red-300 hover:text-green-900 dark:hover:text-green-100 text-sm"
                 >
                   Clear template
                 </button>
@@ -363,6 +370,7 @@ export function AddNewFeature() {
                 <option value="free">Free Tier Only</option>
                 <option value="premium">Premium Tier Only</option>
                 <option value="pro">Pro Tier Only</option>
+                <option value="elite">Elite Tier Only</option>
               </select>
             </div>
 

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 export function AuthSync() {
   const { user, isLoaded } = useUser();
-  const syncAdminUser = useMutation(api.controllers.user.syncAdminUser);
+  const syncAdminUser = useMutation(api.controllers.adminFuncs.syncAdminUser);
   const [hasSynced, setHasSynced] = useState(false);
   const router = useRouter();
 

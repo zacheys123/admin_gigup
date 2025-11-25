@@ -237,3 +237,38 @@ export const getFeatureFlagsForUser = query({
     return filteredFlags;
   },
 });
+// convex/featureFlags.ts
+export const updateFeatureFlag = mutation({
+  args: {
+    flagId: v.string(),
+    name: v.optional(v.string()),
+    description: v.optional(v.string()),
+    targetUsers: v.optional(
+      v.union(
+        v.literal("all"),
+        v.literal("free"),
+        v.literal("pro"),
+        v.literal("premium"),
+        v.literal("elite")
+      )
+    ),
+    targetRoles: v.optional(v.array(v.string())),
+    rolloutPercentage: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const { flagId, ...updates } = args;
+
+    // Get all flags and find the matching one
+    const allFlags = await ctx.db.query("featureFlags").collect();
+    const existingFlag = allFlags.find((flag) => flag.id === flagId);
+
+    if (!existingFlag) {
+      throw new Error(`Feature flag ${flagId} not found`);
+    }
+
+    await ctx.db.patch(existingFlag._id, {
+      ...updates,
+      updatedAt: Date.now(),
+    });
+  },
+});

@@ -19,7 +19,7 @@ export function useAdminCheck() {
   });
 
   const adminData = useQuery(
-    api.controllers.user.getAdminStatus,
+    api.controllers.adminFuncs.getAdminStatus,
     user?.id ? { userId: user.id } : "skip"
   );
 
