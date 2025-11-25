@@ -20,10 +20,10 @@ export const ADMIN_WHITELIST: Record<
   },
 
   // Content Admins - Manage content and features
-  "content@company.com": {
+  "bethmosho@gmail.com": {
     role: "content",
     permissions: ["content_management", "feature_flags", "moderation"],
-    accessLevel: "limited",
+    accessLevel: "restricted",
   },
   "features@company.com": {
     role: "content",

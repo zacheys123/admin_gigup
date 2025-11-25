@@ -25,6 +25,7 @@ import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
+
 type permissions =
   | "all"
   | "content_management"
@@ -33,6 +34,7 @@ type permissions =
   | "analytics"
   | "content_moderation"
   | "payment_management";
+
 const navigationItems = [
   {
     name: "Dashboard",
@@ -47,7 +49,6 @@ const navigationItems = [
     icon: Flag,
     permission: "feature_flags",
   },
-
   {
     name: "User Management",
     href: "/admin/users",
@@ -137,79 +138,94 @@ export function AdminSidebar({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className={`flex flex-col h-full ${colors.navBackground} ${colors.navBorder} border-r`}
+      className={cn(
+        "flex flex-col h-full border-r",
+        colors.navBackground,
+        colors.navBorder
+      )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+      <div
+        className={cn(
+          "flex items-center justify-between p-6 border-b",
+          colors.border
+        )}
+      >
         <div className="flex items-center space-x-3">
           <div
-            className={`p-2 rounded-lg bg-gradient-to-r ${
+            className={cn(
+              "p-2 rounded-lg bg-gradient-to-r",
               roleColors[adminRole as keyof typeof roleColors] ||
-              "from-gray-500 to-gray-600"
-            } ${colors.textInverted}`}
+                "from-gray-500 to-gray-600",
+              colors.textInverted
+            )}
           >
             <RoleIcon className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+            <h1 className={cn("text-lg font-bold", colors.text)}>
               Gigup Admin
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <span
-                className={`px-2 py-1 rounded-full text-xs font-semibold bg-gradient-to-r ${
+                className={cn(
+                  "px-2 py-1 rounded-full text-xs font-semibold bg-gradient-to-r",
                   roleColors[adminRole as keyof typeof roleColors] ||
-                  "from-gray-500 to-gray-600"
-                } text-white`}
+                    "from-gray-500 to-gray-600",
+                  "text-white"
+                )}
               >
                 {adminRole?.toUpperCase() || "ADMIN"}
               </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Control Panel
-              </p>
+              <p className={cn("text-xs", colors.textMuted)}>Control Panel</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Permission Quick View */}
-      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+      <div className={cn("px-4 py-3 border-b", colors.border)}>
         <div className="grid grid-cols-2 gap-2">
           <div
-            className={`flex items-center gap-1 p-1 rounded text-xs ${
+            className={cn(
+              "flex items-center gap-1 p-1 rounded text-xs",
               canManageUsers
                 ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-            }`}
+                : cn(colors.backgroundMuted, colors.textMuted)
+            )}
           >
             <Users className="h-3 w-3" />
             <span>Users</span>
           </div>
           <div
-            className={`flex items-center gap-1 p-1 rounded text-xs ${
+            className={cn(
+              "flex items-center gap-1 p-1 rounded text-xs",
               canManageContent
                 ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-            }`}
+                : cn(colors.backgroundMuted, colors.textMuted)
+            )}
           >
             <Edit className="h-3 w-3" />
             <span>Content</span>
           </div>
           <div
-            className={`flex items-center gap-1 p-1 rounded text-xs ${
+            className={cn(
+              "flex items-center gap-1 p-1 rounded text-xs",
               canManagePayments
                 ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-            }`}
+                : cn(colors.backgroundMuted, colors.textMuted)
+            )}
           >
             <Zap className="h-3 w-3" />
             <span>Payments</span>
           </div>
           <div
-            className={`flex items-center gap-1 p-1 rounded text-xs ${
+            className={cn(
+              "flex items-center gap-1 p-1 rounded text-xs",
               canViewAnalytics
                 ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-            }`}
+                : cn(colors.backgroundMuted, colors.textMuted)
+            )}
           >
             <Eye className="h-3 w-3" />
             <span>Analytics</span>
@@ -228,14 +244,12 @@ export function AdminSidebar({ onClose }: { onClose: () => void }) {
               key={item.name}
               href={item.href}
               onClick={onClose}
-              className={`
-                flex items-center space-x-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200
-                ${
-                  isActive
-                    ? `${colors.primaryBg} ${colors.textInverted} shadow-md`
-                    : `${colors.text} ${colors.hoverBg} hover:shadow-sm`
-                }
-              `}
+              className={cn(
+                "flex items-center space-x-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200",
+                isActive
+                  ? cn(colors.primaryBg, colors.textInverted, "shadow-md")
+                  : cn(colors.text, colors.hoverBg, "hover:shadow-sm")
+              )}
             >
               <Icon className="h-5 w-5" />
               <span>{item.name}</span>
@@ -248,29 +262,27 @@ export function AdminSidebar({ onClose }: { onClose: () => void }) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+      <div className={cn("p-4 border-t space-y-2", colors.border)}>
         {/* Theme Toggle */}
         <div
           className={cn(
-            "flex items-center justify-between px-3 py-2 rounded-lg ",
+            "flex items-center justify-between px-3 py-2 rounded-lg",
             colors.backgroundMuted
           )}
         >
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            Theme
-          </span>
+          <span className={cn("text-sm", colors.textMuted)}>Theme</span>
           <ThemeToggle />
         </div>
 
         {/* Admin Info */}
-        <div className={cn("px-3 py-2 rounded-lg ", colors.backgroundMuted)}>
+        <div className={cn("px-3 py-2 rounded-lg", colors.backgroundMuted)}>
           <p className={cn("text-xs", colors.primary)}>
             Access Level:{" "}
-            <span className="font-medium text-gray-900 dark:text-white">
+            <span className={cn("font-medium", colors.text)}>
               {adminPermissions.includes("all") ? "Full" : "Limited"}
             </span>
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+          <p className={cn("text-xs mt-1", colors.textMuted)}>
             Permissions: {adminPermissions.length}
           </p>
         </div>
@@ -278,7 +290,12 @@ export function AdminSidebar({ onClose }: { onClose: () => void }) {
         {/* Sign Out */}
         <button
           onClick={() => signOut()}
-          className="flex items-center space-x-3 w-full px-3 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          className={cn(
+            "flex items-center space-x-3 w-full px-3 py-3 rounded-lg text-sm font-medium transition-colors",
+            colors.destructive,
+            colors.destructiveBg,
+            colors.destructiveHover
+          )}
         >
           <LogOut className="h-5 w-5" />
           <span>Sign Out</span>
