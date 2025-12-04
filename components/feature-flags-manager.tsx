@@ -266,6 +266,7 @@ export function FeatureFlagsManager() {
 
   const handleSaveEdit = async (updates: any) => {
     try {
+      console.log("🚀 [FRONTEND] Sending update:", updates);
       await updateFlag(updates);
       // The data will refresh automatically due to useQuery
     } catch (error) {
@@ -453,13 +454,13 @@ export function FeatureFlagsManager() {
                         flagId: flag.id,
                         rolloutPercentage: Math.max(
                           0,
-                          flag.rolloutPercentage - 25
+                          flag.rolloutPercentage - 10
                         ),
                       })
                     }
                     className={`px-3 py-2 ${colors.backgroundMuted} ${colors.text} rounded-lg ${colors.hoverBg} text-sm`}
                   >
-                    -25%
+                    -10%
                   </button>
                   <button
                     onClick={() =>
@@ -467,13 +468,13 @@ export function FeatureFlagsManager() {
                         flagId: flag.id,
                         rolloutPercentage: Math.min(
                           100,
-                          flag.rolloutPercentage + 25
+                          flag.rolloutPercentage + 10
                         ),
                       })
                     }
                     className={`px-3 py-2 ${colors.backgroundMuted} ${colors.text} rounded-lg ${colors.hoverBg} text-sm`}
                   >
-                    +25%
+                    +10%
                   </button>
                 </div>
               )}

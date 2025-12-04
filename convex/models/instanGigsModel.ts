@@ -42,7 +42,8 @@ export const instantGigs = defineTable({
         v.literal("invited"),
         v.literal("accepted"),
         v.literal("declined"),
-        v.literal("deputy-suggested")
+        v.literal("deputy-suggested"),
+        v.literal("cancelled") // ADD THIS
       ),
       timestamp: v.number(),
       actionBy: v.union(
@@ -52,10 +53,12 @@ export const instantGigs = defineTable({
       ),
       notes: v.optional(v.string()), // e.g., "Suggested deputy instead", "Not available"
       deputySuggestedId: v.optional(v.id("users")), // If deputy was suggested
+      updatedAt: v.optional(v.number()), // ADD THIS
     })
   ),
   // Timestamps
   createdAt: v.number(),
+  updatedAt: v.optional(v.number()), // ADD THIS
 })
   .index("by_client", ["clientId"])
   .index("by_musician", ["invitedMusicianId"])

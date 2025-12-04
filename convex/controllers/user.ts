@@ -8,7 +8,98 @@ import {
   deleteFollowRequestNotification,
   isUserDocument,
 } from "../createNotificationInternal";
+// Helper function to create type-safe user data with admin defaults
+const createUserData = (args: any, now: number) => {
+  return {
+    ...args,
+    lastActive: now,
 
+    // Role fields with defaults
+    isMusician: false,
+    isClient: false,
+    isBooker: false,
+    isAdmin: false, // Default to false
+    isBoth: false,
+    isBanned: false,
+
+    // Admin fields with defaults
+    adminRole: undefined,
+    adminPermissions: [],
+    adminAccessLevel: undefined,
+    canManageUsers: false,
+    canManageContent: false,
+    canManagePayments: false,
+    canViewAnalytics: false,
+    adminNotes: undefined,
+    adminDashboardAccess: false,
+    lastAdminAction: undefined,
+
+    // Tier and theme with literal types
+    tier: "free" as const,
+    theme: "system" as const,
+
+    // Numeric fields
+    earnings: 0,
+    totalSpent: 0,
+    monthlyGigsPosted: 0,
+    monthlyMessages: 0,
+    monthlyGigsBooked: 0,
+    completedGigsCount: 0,
+    reportsCount: 0,
+    cancelgigCount: 0,
+    renewalAttempts: 0,
+
+    // Boolean flags
+    firstLogin: true,
+    onboardingComplete: false,
+    firstTimeInProfile: true,
+    mutualFollowers: 0,
+
+    // String fields
+    banReason: "",
+
+    // Date fields
+    bannedAt: 0,
+    isPrivate: false,
+    pendingFollowRequests: [],
+
+    // Booker fields
+    bookerSkills: [],
+    managedBands: [],
+    artistsManaged: [],
+
+    // Social fields
+    followers: [],
+    followings: [],
+    refferences: [],
+    allreviews: [],
+    myreviews: [],
+    savedGigs: [],
+    favoriteGigs: [],
+    bookingHistory: [],
+
+    // Performance fields
+    badges: [],
+    reliabilityScore: 100,
+    avgRating: 0,
+    performanceStats: {
+      totalGigsCompleted: 0,
+      onTimeRate: 100,
+      clientSatisfaction: 100,
+      lastUpdated: now,
+    },
+    badgeMilestones: {
+      consecutiveGigs: 0,
+      earlyCompletions: 0,
+      perfectRatings: 0,
+      cancellationFreeStreak: 0,
+    },
+    gigsBookedThisWeek: {
+      count: 0,
+      weekStart: now,
+    },
+  };
+};
 export const updateFirstLogin = mutation({
   args: {
     clerkId: v.string(),
@@ -209,6 +300,17 @@ export const updateUserProfile = mutation({
 
       // Role-specific fields
       roleType: v.optional(v.string()),
+      clientType: v.optional(
+        v.union(
+          v.literal("individual_client"),
+          v.literal("event_planner_client"),
+          v.literal("venue_client"),
+          v.literal("corporate_client")
+        )
+      ), // ADDED: For client accounts
+      bookerType: v.optional(
+        v.union(v.literal("talent_agent"), v.literal("booking_manager"))
+      ), // ADDED: For booker accounts
       djGenre: v.optional(v.string()),
       djEquipment: v.optional(v.string()),
       mcType: v.optional(v.string()),
@@ -252,100 +354,7 @@ export const updateUserProfile = mutation({
     return { success: true };
   },
 });
-// Helper function to create type-safe user data
-// convex/controllers/user.ts - UPDATE createUserData
-// Helper function to create type-safe user data with admin defaults
-const createUserData = (args: any, now: number) => {
-  return {
-    ...args,
-    lastActive: now,
 
-    // Role fields with defaults
-    isMusician: false,
-    isClient: false,
-    isBooker: false,
-    isAdmin: false, // Default to false
-    isBoth: false,
-    isBanned: false,
-
-    // Admin fields with defaults
-    adminRole: undefined,
-    adminPermissions: [],
-    adminAccessLevel: undefined,
-    canManageUsers: false,
-    canManageContent: false,
-    canManagePayments: false,
-    canViewAnalytics: false,
-    adminNotes: undefined,
-    adminDashboardAccess: false,
-    lastAdminAction: undefined,
-
-    // Tier and theme with literal types
-    tier: "free" as const,
-    theme: "system" as const,
-
-    // Numeric fields
-    earnings: 0,
-    totalSpent: 0,
-    monthlyGigsPosted: 0,
-    monthlyMessages: 0,
-    monthlyGigsBooked: 0,
-    completedGigsCount: 0,
-    reportsCount: 0,
-    cancelgigCount: 0,
-    renewalAttempts: 0,
-
-    // Boolean flags
-    firstLogin: true,
-    onboardingComplete: false,
-    firstTimeInProfile: true,
-    mutualFollowers: 0,
-
-    // String fields
-    banReason: "",
-
-    // Date fields
-    bannedAt: 0,
-    isPrivate: false,
-    pendingFollowRequests: [],
-
-    // Booker fields
-    bookerSkills: [],
-    managedBands: [],
-    artistsManaged: [],
-
-    // Social fields
-    followers: [],
-    followings: [],
-    refferences: [],
-    allreviews: [],
-    myreviews: [],
-    savedGigs: [],
-    favoriteGigs: [],
-    bookingHistory: [],
-
-    // Performance fields
-    badges: [],
-    reliabilityScore: 100,
-    avgRating: 0,
-    performanceStats: {
-      totalGigsCompleted: 0,
-      onTimeRate: 100,
-      clientSatisfaction: 100,
-      lastUpdated: now,
-    },
-    badgeMilestones: {
-      consecutiveGigs: 0,
-      earlyCompletions: 0,
-      perfectRatings: 0,
-      cancellationFreeStreak: 0,
-    },
-    gigsBookedThisWeek: {
-      count: 0,
-      weekStart: now,
-    },
-  };
-};
 export const getAllUsers = query({
   args: {},
   handler: async (ctx) => {

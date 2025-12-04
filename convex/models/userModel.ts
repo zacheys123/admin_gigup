@@ -39,6 +39,7 @@ export const userModel = defineTable({
   canManagePayments: v.optional(v.boolean()),
   canViewAnalytics: v.optional(v.boolean()),
   adminNotes: v.optional(v.string()),
+
   adminDashboardAccess: v.optional(v.boolean()),
   lastAdminAction: v.optional(v.number()),
   isBooker: v.optional(v.boolean()),
@@ -71,10 +72,10 @@ export const userModel = defineTable({
 
   clientType: v.optional(
     v.union(
-      v.literal("individual"),
-      v.literal("event_planner"),
-      v.literal("venue"),
-      v.literal("corporate")
+      v.literal("individual_client"),
+      v.literal("event_planner_client"),
+      v.literal("venue_client"),
+      v.literal("corporate_client")
     )
   ),
   bookerType: v.optional(

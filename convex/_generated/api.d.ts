@@ -39,6 +39,7 @@ import type * as models_push from "../models/push.js";
 import type * as models_userModel from "../models/userModel.js";
 import type * as models_videoModel from "../models/videoModel.js";
 import type * as musicianmetrics from "../musicianmetrics.js";
+import type * as notHelpers from "../notHelpers.js";
 import type * as notificationsTypes from "../notificationsTypes.js";
 import type * as presence from "../presence.js";
 import type * as test from "../test.js";
@@ -81,6 +82,7 @@ declare const fullApi: ApiFromModules<{
   "models/userModel": typeof models_userModel;
   "models/videoModel": typeof models_videoModel;
   musicianmetrics: typeof musicianmetrics;
+  notHelpers: typeof notHelpers;
   notificationsTypes: typeof notificationsTypes;
   presence: typeof presence;
   test: typeof test;
