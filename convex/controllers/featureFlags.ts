@@ -196,7 +196,7 @@ export const setFeatureFlag = mutation({
                 title: "New Feature Available! 🎉",
                 message: `${existing?.name || flagId} is now live!`,
                 image: "/images/feature-flags.png",
-                actionUrl: "/settings/notifications",
+                actionUrl: "/community?tab=deputies",
                 relatedUserDocumentId: undefined,
                 isViewerInGracePeriod: user.tier !== "pro",
                 metadata: {

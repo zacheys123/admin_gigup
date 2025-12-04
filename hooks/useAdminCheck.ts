@@ -3,6 +3,7 @@
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { AdminPermission, AdminRole } from "@/types";
 
 export function useAdminCheck() {
   const { user, isLoaded: userLoaded } = useUser();
@@ -38,18 +39,17 @@ export function useAdminCheck() {
     adminRole: adminData?.role,
     adminPermissions: adminData?.permissions,
   });
-
+  const adminPermissions = (adminData?.permissions || []) as AdminPermission[];
+  const adminRole = adminData?.role as AdminRole | undefined;
   return {
     isAdmin: adminData?.isAdmin ?? false,
     isChecking,
-    adminRole: adminData?.role,
-    adminPermissions: adminData?.permissions || [],
-    canManageUsers:
-      adminData?.permissions?.includes("user_management") ?? false,
-    canManageContent:
-      adminData?.permissions?.includes("content_management") ?? false,
+    adminRole: adminRole,
+    adminPermissions: adminPermissions || [],
+    canManageUsers: adminPermissions?.includes("user_management") ?? false,
+    canManageContent: adminPermissions?.includes("content_management") ?? false,
     canManagePayments:
-      adminData?.permissions?.includes("payment_management") ?? false,
-    canViewAnalytics: adminData?.permissions?.includes("analytics") ?? false,
+      adminPermissions?.includes("payment_management") ?? false,
+    canViewAnalytics: adminPermissions?.includes("analytics") ?? false,
   };
 }

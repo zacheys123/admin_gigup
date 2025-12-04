@@ -1,9 +1,14 @@
+// lib/admin-whitelist.ts
+import { AdminPermission, AdminRole, AccessLevel } from "@/types";
+
+export type { AdminPermission, AdminRole, AccessLevel };
+
 // Pre-mapped admin emails to roles
 export const ADMIN_WHITELIST: Record<
   string,
   {
-    role: "super" | "content" | "support" | "analytics";
-    permissions: string[];
+    role: "super" | "content" | "support" | "analytics" | "admin";
+    permissions: AdminPermission[];
     accessLevel: "full" | "limited" | "restricted";
   }
 > = {
@@ -22,7 +27,7 @@ export const ADMIN_WHITELIST: Record<
   // Content Admins - Manage content and features
   "bethmosho@gmail.com": {
     role: "content",
-    permissions: ["content_management", "feature_flags", "moderation"],
+    permissions: ["content_management", "feature_flags", "content_moderation"],
     accessLevel: "restricted",
   },
   "features@company.com": {
@@ -34,12 +39,16 @@ export const ADMIN_WHITELIST: Record<
   // Support Admins - User management and support
   "support@company.com": {
     role: "support",
-    permissions: ["user_support", "content_moderation", "user_management"],
+    permissions: [
+      "support_management",
+      "content_moderation",
+      "user_management",
+    ],
     accessLevel: "limited",
   },
   "help@company.com": {
     role: "support",
-    permissions: ["user_support", "content_moderation"],
+    permissions: ["support_management", "content_moderation"],
     accessLevel: "limited",
   },
 
@@ -56,19 +65,17 @@ export const ADMIN_WHITELIST: Record<
   },
 };
 
-// Helper function to get admin config by email
+// Helper functions
 export const getAdminConfig = (email: string) => {
   const normalizedEmail = email.trim().toLowerCase();
-  return ADMIN_WHITELIST[normalizedEmail];
+  return ADMIN_WHITELIST[normalizedEmail] || null;
 };
 
-// Check if email is in admin whitelist
 export const isAdminWhitelisted = (email: string): boolean => {
   const normalizedEmail = email.trim().toLowerCase();
   return normalizedEmail in ADMIN_WHITELIST;
 };
 
-// Get all admin emails for verification
 export const getAllAdminEmails = (): string[] => {
   return Object.keys(ADMIN_WHITELIST);
 };
