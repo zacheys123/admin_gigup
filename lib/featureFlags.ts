@@ -255,7 +255,7 @@ export const FEATURE_FLAGS_CONFIG: Record<
     id: "vocal_warmups",
     name: "Vocal Warmups",
     description: "Interactive vocal warmup exercises and routines",
-    targetUsers: "premium",
+    targetUsers: "pro",
     targetRoles: ["vocalist"],
     rolloutPercentage: 0,
   },

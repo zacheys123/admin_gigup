@@ -132,6 +132,13 @@ const navigationItems: NavigationItem[] = [
     description: "Email campaigns",
   },
   {
+    name: "Testimonials",
+    href: "/admin/testimonials",
+    icon: Mail,
+    permission: "content_management",
+    description: "User Testimonials",
+  },
+  {
     name: "Audit Logs",
     href: "/admin/audit-logs",
     icon: FileCheck,
@@ -268,9 +275,13 @@ export function AdminSidebar({ onClose, isMobile = false }: AdminSidebarProps) {
       )
     ),
     Management: filteredNavigation.filter((item) =>
-      ["users", "feature-flags", "notifications", "support"].includes(
-        item.href.split("/")[2] || ""
-      )
+      [
+        "users",
+        "feature-flags",
+        "notifications",
+        "support",
+        "testimonials",
+      ].includes(item.href.split("/")[2] || "")
     ),
     System: filteredNavigation.filter((item) =>
       [
