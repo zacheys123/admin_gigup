@@ -76,7 +76,12 @@ interface TabType {
   icon: React.ReactNode;
   count: number;
   color: string;
-}
+} // Add this type guard function
+const isValidTier = (
+  tier: string
+): tier is "free" | "pro" | "premium" | "elite" => {
+  return ["free", "pro", "premium", "elite"].includes(tier);
+};
 
 const UserManagementPage = () => {
   const { colors, mounted } = useThemeColors();
@@ -87,8 +92,8 @@ const UserManagementPage = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
-    tier: "",
-    roleType: "",
+    tier: "all", // Change from "" to "all"
+    roleType: "all", // Change from "" to "all"
     isBanned: undefined as boolean | undefined,
     isSuspended: undefined as boolean | undefined,
     minReports: undefined as number | undefined,
@@ -108,13 +113,17 @@ const UserManagementPage = () => {
 
   // Fetch data
   const userStats = useQuery(api.admin.users.getUserStats);
+  // Then update your usersData query:
   const usersData = useQuery(api.admin.users.getUsersForAdmin, {
     filters: {
       search: searchQuery || undefined,
       isBanned: filters.isBanned,
       isSuspended: filters.isSuspended,
-      tier: filters.tier as any,
-      roleType: filters.roleType || undefined,
+      tier:
+        filters.tier !== "all" && isValidTier(filters.tier)
+          ? filters.tier
+          : undefined,
+      roleType: filters.roleType !== "all" ? filters.roleType : undefined,
       minReports: filters.minReports,
       sortBy: "lastActive",
       sortOrder: "desc",
@@ -395,36 +404,59 @@ const UserManagementPage = () => {
             </Button>
           </div>
         </div>
-
         {/* Stats Overview */}
+        // In the Stats Overview section, update to show all tiers:
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
           {userStats &&
-            Object.entries(userStats).map(([key, value]) => (
-              <div
-                key={key}
-                className={cn(
-                  "p-4 rounded-xl border",
-                  colors.border,
-                  colors.backgroundMuted
-                )}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                      {key.replace(/([A-Z])/g, " $1").trim()}
-                    </p>
-                    <p className="text-2xl font-bold mt-1">{value}</p>
+            [
+              { key: "total", label: "Total Users" },
+              { key: "active", label: "Active Users" },
+              { key: "freeUsers", label: "Free Users" },
+              { key: "proUsers", label: "Pro Users" },
+              { key: "premiumUsers", label: "Premium Users" },
+              { key: "eliteUsers", label: "Elite Users" },
+              { key: "banned", label: "Banned" },
+              { key: "suspended", label: "Suspended" },
+              { key: "musicians", label: "Musicians" },
+              { key: "clients", label: "Clients" },
+              { key: "bookers", label: "Bookers" },
+              { key: "reported", label: "Reported" },
+              { key: "recentSignups", label: "Recent Signups" },
+            ]
+              .filter(
+                ({ key }) =>
+                  userStats[key as keyof typeof userStats] !== undefined
+              )
+              .map(({ key, label }) => (
+                <div
+                  key={key}
+                  className={cn(
+                    "p-4 rounded-xl border",
+                    colors.border,
+                    colors.backgroundMuted
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {label}
+                      </p>
+                      <p className="text-2xl font-bold mt-1">
+                        {userStats[key as keyof typeof userStats]}
+                      </p>
+                    </div>
+                    {key === "recentSignups" && (
+                      <TrendingUp className="h-5 w-5 text-green-500" />
+                    )}
+                    {key === "banned" && (
+                      <Ban className="h-5 w-5 text-red-500" />
+                    )}
+                    {key === "active" && (
+                      <CheckCircle className="h-5 w-5 text-green-500" />
+                    )}
                   </div>
-                  {key === "recentSignups" && (
-                    <TrendingUp className="h-5 w-5 text-green-500" />
-                  )}
-                  {key === "banned" && <Ban className="h-5 w-5 text-red-500" />}
-                  {key === "active" && (
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                  )}
                 </div>
-              </div>
-            ))}
+              ))}
         </div>
       </div>
 
@@ -451,7 +483,7 @@ const UserManagementPage = () => {
                 <SelectValue placeholder="Tier" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Tiers</SelectItem>
+                <SelectItem value="all">All Tiers</SelectItem>
                 <SelectItem value="free">Free</SelectItem>
                 <SelectItem value="pro">Pro</SelectItem>
                 <SelectItem value="premium">Premium</SelectItem>
@@ -469,7 +501,7 @@ const UserManagementPage = () => {
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Roles</SelectItem>
+                <SelectItem value="all">All Roles</SelectItem>
                 <SelectItem value="guitarist">Guitarist</SelectItem>
                 <SelectItem value="drummer">Drummer</SelectItem>
                 <SelectItem value="pianist">Pianist</SelectItem>
@@ -479,13 +511,12 @@ const UserManagementPage = () => {
                 <SelectItem value="teacher">Teacher</SelectItem>
               </SelectContent>
             </Select>
-
             <Button
               variant="outline"
               onClick={() =>
                 setFilters({
-                  tier: "",
-                  roleType: "",
+                  tier: "all", // Change from "" to "all"
+                  roleType: "all", // Change from "" to "all"
                   isBanned: undefined,
                   isSuspended: undefined,
                   minReports: undefined,
@@ -712,7 +743,7 @@ const UserManagementPage = () => {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
-                          {user.reportedCount > 0 ? (
+                          {user?.reportedCount && user?.reportedCount > 0 ? (
                             <>
                               <AlertCircle className="h-4 w-4 text-red-500" />
                               <span className="font-medium text-red-600 dark:text-red-400">
