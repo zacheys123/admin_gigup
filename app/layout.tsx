@@ -2,6 +2,7 @@ import { ConvexClientProvider } from "@/components/providers/convex-provider";
 import { AuthSync } from "@/components/AuthSync";
 import "./globals.css";
 import { Metadata } from "next";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Gigup Admin",
@@ -17,6 +18,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ConvexClientProvider>
+          {" "}
+          <Toaster position="top-right" />
           <AuthSync />
           {children}
         </ConvexClientProvider>
