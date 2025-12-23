@@ -1,18 +1,22 @@
-// lib/admin-whitelist.ts
-import { AdminPermission, AdminRole, AccessLevel } from "@/types";
+import { AccessLevel, AdminPermission, AdminRole } from "@/types";
 
-export type { AdminPermission, AdminRole, AccessLevel };
+export interface AdminConfig {
+  role: AdminRole;
+  permissions: AdminPermission[];
+  accessLevel: AccessLevel;
+}
 
-// Pre-mapped admin emails to roles
-export const ADMIN_WHITELIST: Record<
-  string,
-  {
-    role: "super" | "content" | "support" | "analytics" | "admin";
-    permissions: AdminPermission[];
-    accessLevel: "full" | "limited" | "restricted";
-  }
-> = {
-  // Super Admins - Full system access
+// Define valid roles that match your Convex schema
+export type ValidAdminRole =
+  | "super"
+  | "content"
+  | "support"
+  | "analytics"
+  | "admin"
+  | "security"
+  | "infrastructure";
+
+export const ADMIN_WHITELIST: Record<string, AdminConfig> = {
   "blessedzackeys@gmail.com": {
     role: "super",
     permissions: ["all"],
@@ -23,8 +27,6 @@ export const ADMIN_WHITELIST: Record<
     permissions: ["all"],
     accessLevel: "full",
   },
-
-  // Content Admins - Manage content and features
   "bethmosho@gmail.com": {
     role: "content",
     permissions: ["content_management", "feature_flags", "content_moderation"],
@@ -35,14 +37,12 @@ export const ADMIN_WHITELIST: Record<
     permissions: ["feature_flags", "content_management"],
     accessLevel: "limited",
   },
-
-  // Support Admins - User management and support
   "support@company.com": {
     role: "support",
     permissions: [
+      "user_management",
       "support_management",
       "content_moderation",
-      "user_management",
     ],
     accessLevel: "limited",
   },
@@ -51,8 +51,6 @@ export const ADMIN_WHITELIST: Record<
     permissions: ["support_management", "content_moderation"],
     accessLevel: "limited",
   },
-
-  // Analytics Admins - Data and reporting only
   "analytics@company.com": {
     role: "analytics",
     permissions: ["analytics", "reports", "data_export"],
@@ -65,8 +63,7 @@ export const ADMIN_WHITELIST: Record<
   },
 };
 
-// Helper functions
-export const getAdminConfig = (email: string) => {
+export const getAdminConfig = (email: string): AdminConfig | null => {
   const normalizedEmail = email.trim().toLowerCase();
   return ADMIN_WHITELIST[normalizedEmail] || null;
 };
@@ -78,4 +75,33 @@ export const isAdminWhitelisted = (email: string): boolean => {
 
 export const getAllAdminEmails = (): string[] => {
   return Object.keys(ADMIN_WHITELIST);
+};
+
+// Helper to ensure permissions are valid for your schema
+export const getValidPermissions = (
+  permissions: AdminPermission[]
+): AdminPermission[] => {
+  const validPermissions: AdminPermission[] = [
+    "all",
+    "content_management",
+    "feature_flags",
+    "user_management",
+    "analytics",
+    "content_moderation",
+    "payment_management",
+    "notification_management",
+    "support_management",
+    "system_settings",
+    "security",
+    "api_management",
+    "infrastructure",
+    "moderation",
+    "user_support",
+    "reports",
+    "data_export",
+  ];
+
+  return permissions.filter((permission) =>
+    validPermissions.includes(permission)
+  );
 };

@@ -9,6 +9,7 @@ import { pushSubscriptions } from "./models/push";
 import { videoModel } from "./models/videoModel";
 import { commentsModel } from "./models/commentsModel";
 import { instantGigs, instantGigsTemplate } from "./models/instanGigsModel";
+import { reports } from "./models/reportsModel";
 
 export default defineSchema({
   users: userModel,
@@ -186,4 +187,5 @@ export default defineSchema({
     .index("by_target", ["targetUserId"])
     .index("by_action", ["action"])
     .index("by_timestamp", ["timestamp"]),
+  reports: reports,
 });

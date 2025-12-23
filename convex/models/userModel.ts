@@ -22,12 +22,16 @@ export const userModel = defineTable({
   isClient: v.boolean(),
   isBoth: v.optional(v.boolean()),
   isAdmin: v.optional(v.boolean()),
+  // In your user schema, update the adminRole field to match all possible roles
   adminRole: v.optional(
     v.union(
       v.literal("super"),
       v.literal("content"),
       v.literal("support"),
-      v.literal("analytics")
+      v.literal("analytics"),
+      v.literal("admin"),
+      v.literal("security"),
+      v.literal("infrastructure")
     )
   ),
   adminPermissions: v.optional(
@@ -264,8 +268,8 @@ export const userModel = defineTable({
   onboardingComplete: v.boolean(),
   lastActive: v.number(),
   isBanned: v.boolean(),
-  banReason: v.string(),
-  bannedAt: v.number(),
+  banReason: v.optional(v.string()),
+  bannedAt: v.optional(v.number()),
   banExpiresAt: v.optional(v.number()),
   banReference: v.optional(v.string()),
 
@@ -408,6 +412,9 @@ export const userModel = defineTable({
       })
     )
   ),
+  companyName: v.optional(v.string()),
+  managedArtists: v.optional(v.array(v.string())),
+  agencyName: v.optional(v.string()),
 })
   .index("by_clerkId", ["clerkId"])
   .index("by_email", ["email"])

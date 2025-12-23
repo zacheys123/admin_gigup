@@ -1,13 +1,20 @@
-// app/admin/layout.tsx - UPDATED WITH FIXED SIDEBAR
+// app/admin/layout.tsx - UPDATED WITH CACHING
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useThemeColors } from "@/hooks/useTheme";
-import { useAdminCheck } from "@/hooks/useAdminCheck";
-
-import { Menu, X, Shield, ChevronRight, Home, Bell } from "lucide-react";
+import { useAdminAuth } from "@/hooks/useAdminAuth"; // Changed from useAdminCheck
+import {
+  Menu,
+  X,
+  Shield,
+  ChevronRight,
+  Home,
+  Bell,
+  RefreshCw,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AdminSidebar } from "./Sidebar";
 
@@ -17,12 +24,25 @@ export function AdminLayoutWrapper({
   children: React.ReactNode;
 }) {
   const { colors, mounted } = useThemeColors();
-  const { isAdmin, isChecking, adminRole } = useAdminCheck();
+  const { isAdmin, isChecking, adminRole, refreshAdminStatus, source } =
+    useAdminAuth(); // Using new hook
   const { isLoaded: userLoaded, user } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
   const router = useRouter();
+
+  // Debug logging
+  useEffect(() => {
+    console.log("🏛️ Admin Layout State:", {
+      userLoaded,
+      user: user?.id,
+      isAdmin,
+      isChecking,
+      source,
+      mounted,
+    });
+  }, [userLoaded, user, isAdmin, isChecking, source, mounted]);
 
   // Handle scroll for mobile header
   useEffect(() => {
@@ -57,9 +77,16 @@ export function AdminLayoutWrapper({
   // Redirect non-admins only after everything is loaded
   useEffect(() => {
     if (userLoaded && !isChecking && !isAdmin) {
+      console.log("🚫 User is not admin, redirecting...");
       router.push("/unauthorized");
     }
   }, [userLoaded, isChecking, isAdmin, router]);
+
+  // Add a manual refresh button in development
+  const handleManualRefresh = () => {
+    console.log("🔄 Manual admin status refresh");
+    refreshAdminStatus();
+  };
 
   // Show loading while any check is in progress
   const isLoading = !mounted || !userLoaded || isChecking;
@@ -74,7 +101,8 @@ export function AdminLayoutWrapper({
       >
         <div className="text-center">
           <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500 mx-auto mb-6"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-full blur-xl opacity-20" />
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500 mx-auto mb-6 relative"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <Shield className="h-8 w-8 text-orange-500 animate-pulse" />
             </div>
@@ -84,6 +112,16 @@ export function AdminLayoutWrapper({
           </div>
           <div className={cn("text-sm space-y-1", colors.textMuted)}>
             <div>Verifying permissions...</div>
+            <div className="text-xs opacity-75">Source: {source}</div>
+            {process.env.NODE_ENV === "development" && (
+              <button
+                onClick={handleManualRefresh}
+                className="mt-3 px-4 py-2 text-xs bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+              >
+                <RefreshCw className="h-3 w-3 inline mr-2" />
+                Force Refresh
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -97,6 +135,22 @@ export function AdminLayoutWrapper({
 
   return (
     <div className={cn("min-h-screen", colors.background)}>
+      {/* Development toolbar */}
+      {process.env.NODE_ENV === "development" && (
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+          <div className="px-3 py-1.5 bg-gray-800 text-white text-xs rounded-full">
+            Source: <span className="font-bold">{source}</span>
+          </div>
+          <button
+            onClick={handleManualRefresh}
+            className="p-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors shadow-lg"
+            title="Refresh admin status"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* Fixed Sidebar - Always visible on desktop */}
       <div className="hidden lg:block fixed left-0 top-0 h-screen z-40">
         <AdminSidebar />

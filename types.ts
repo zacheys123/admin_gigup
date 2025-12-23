@@ -1,23 +1,22 @@
 // types/admin.types.ts
 export type AdminPermission =
   | "all"
-  | "content_management"
-  | "feature_flags"
+  | "super"
   | "user_management"
-  | "analytics"
-  | "content_moderation"
+  | "content_management"
   | "payment_management"
+  | "analytics"
+  | "feature_flags"
+  | "content_moderation"
   | "notification_management"
-  | "support_management"
   | "system_settings"
-  | "security"
-  | "api_management"
-  | "infrastructure"
-  | "moderation"
-  | "user_support"
+  | "api_access"
+  | "data_export"
+  | "billing_management"
+  | "support_tickets"
+  | "marketing"
   | "reports"
-  | "data_export";
-
+  | "support_management"; // Add any missing ones
 export type AdminRole =
   | "super"
   | "content"
